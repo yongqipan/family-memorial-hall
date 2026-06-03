@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
-function App() {
-  const mountRef = useRef<HTMLDivElement>(null);
+export default function App() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const [selectedRitual, setSelectedRitual] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    if (!containerRef.current) return;
 
     // 创建场景
     const scene = new THREE.Scene();
@@ -16,11 +17,20 @@ function App() {
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 2, 5);
 
-    // 创建渲染器
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // 创建渲染器（只创建一次）
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      preserveDrawingBuffer: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setSize(window.innerWidth / window.devicePixelRatio, window.innerHeight / window.devicePixelRatio);
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
-    mountRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+    
+    // 清空容器并添加 canvas
+    containerRef.current.innerHTML = '';
+    containerRef.current.appendChild(renderer.domElement);
 
     // 添加光源
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -95,6 +105,7 @@ function App() {
 
     const onMouseDown = (e: MouseEvent) => {
       isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -104,6 +115,7 @@ function App() {
       cameraAngleX -= deltaX * 0.01;
       cameraAngleY = Math.max(0.1, Math.min(Math.PI / 2.2, cameraAngleY - deltaY * 0.01));
       updateCamera();
+      previousMousePosition = { x: e.clientX, y: e.clientY };
     };
 
     const onMouseUp = () => {
@@ -127,14 +139,25 @@ function App() {
     };
     animate();
 
+    // 响应窗口大小变化
+    const handleResize = () => {
+      camera.aspect = (window.innerWidth / window.devicePixelRatio) / (window.innerHeight / window.devicePixelRatio);
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth / window.devicePixelRatio, window.innerHeight / window.devicePixelRatio);
+    };
+    window.addEventListener('resize', handleResize);
+
     // 清理
     return () => {
+      window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('mousedown', onMouseDown);
       renderer.domElement.removeEventListener('mousemove', onMouseMove);
       renderer.domElement.removeEventListener('mouseup', onMouseUp);
       renderer.domElement.removeEventListener('wheel', onWheel);
       renderer.dispose();
-      mountRef.current?.removeChild(renderer.domElement);
+      if (rendererRef.current && containerRef.current) {
+        containerRef.current.removeChild(rendererRef.current.domElement);
+      }
     };
   }, []);
 
@@ -159,8 +182,16 @@ function App() {
         </h1>
       </header>
 
-      {/* 3D 场景 */}
-      <div ref={mountRef} style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+      {/* 3D 场景容器 */}
+      <div 
+        ref={containerRef} 
+        style={{ 
+          flex: 1, 
+          position: 'relative', 
+          overflow: 'hidden',
+          background: 'linear-gradient(to bottom, #1a1a2e, #16213e)',
+        }} 
+      >
         {/* 祭拜按钮 */}
         <div style={{
           position: 'absolute',
@@ -292,5 +323,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
