@@ -4,6 +4,7 @@ import * as THREE from 'three';
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [selectedRitual, setSelectedRitual] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,9 +29,18 @@ export default function App() {
     renderer.shadowMap.enabled = true;
     rendererRef.current = renderer;
     
-    // 清空容器并添加 canvas
-    containerRef.current.innerHTML = '';
-    containerRef.current.appendChild(renderer.domElement);
+    // 创建专门的 canvas 容器，避免清空整个容器
+    const canvasWrapper = document.createElement('div');
+    canvasWrapper.style.position = 'absolute';
+    canvasWrapper.style.top = '0';
+    canvasWrapper.style.left = '0';
+    canvasWrapper.style.width = '100%';
+    canvasWrapper.style.height = '100%';
+    canvasWrapper.style.zIndex = '1';
+    canvasContainerRef.current = canvasWrapper;
+    
+    canvasWrapper.appendChild(renderer.domElement);
+    containerRef.current.appendChild(canvasWrapper);
 
     // 添加光源
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -155,8 +165,8 @@ export default function App() {
       renderer.domElement.removeEventListener('mouseup', onMouseUp);
       renderer.domElement.removeEventListener('wheel', onWheel);
       renderer.dispose();
-      if (rendererRef.current && containerRef.current) {
-        containerRef.current.removeChild(rendererRef.current.domElement);
+      if (canvasContainerRef.current && containerRef.current) {
+        containerRef.current.removeChild(canvasContainerRef.current);
       }
     };
   }, []);
@@ -192,6 +202,8 @@ export default function App() {
           background: 'linear-gradient(to bottom, #1a1a2e, #16213e)',
         }} 
       >
+        {/* Canvas 将通过 ref 动态添加到这个容器 */}
+
         {/* 祭拜按钮 */}
         <div style={{
           position: 'absolute',
