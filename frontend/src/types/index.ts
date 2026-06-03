@@ -1,9 +1,15 @@
-export interface ApiResponse<T> {
+/**
+ * API 响应类型
+ */
+export interface ApiResponse<T = any> {
   code: string;
   message: string;
-  data: T;
+  data?: T;
 }
 
+/**
+ * 用户类型
+ */
 export interface User {
   id: string;
   email: string;
@@ -13,13 +19,16 @@ export interface User {
   familyId: string | null;
 }
 
+/**
+ * 纪念堂类型
+ */
 export interface Memorial {
   id: string;
   deceasedId: string;
   familyId: string;
   name: string;
   sceneType: 'HALL' | 'TOMBSTONE';
-  sceneConfig: SceneConfig;
+  sceneConfig: any;
   biography: string | null;
   birthDate: string | null;
   deathDate: string | null;
@@ -32,36 +41,18 @@ export interface Memorial {
   updatedAt: string;
 }
 
-export interface SceneConfig {
-  templateId: string;
-  background: string;
-  lighting: LightingConfig;
-  decorations: DecorationConfig[];
-  backgroundMusic?: string;
-}
-
-export interface LightingConfig {
-  ambientIntensity: number;
-  ambientColor: string;
-  directionalIntensity: number;
-  directionalColor: string;
-  shadowsEnabled: boolean;
-}
-
-export interface DecorationConfig {
-  type: string;
-  modelUrl: string;
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: [number, number, number];
-}
-
-export interface RitualType {
+/**
+ * 祭拜动作类型
+ */
+export interface RitualAction {
   ritualType: 'FLOWER' | 'CANDLE' | 'INCENSE' | 'BOW' | 'OFFERING';
   ritualData: Record<string, any>;
   message?: string;
 }
 
+/**
+ * 家族成员类型
+ */
 export interface FamilyMember {
   id: string;
   familyId: string;
@@ -82,11 +73,9 @@ export interface FamilyMember {
   updatedAt: string;
 }
 
-export interface FamilyTreeNode extends FamilyMember {
-  children: FamilyTreeNode[];
-  spouse?: FamilyTreeNode | null;
-}
-
+/**
+ * 媒体文件类型
+ */
 export interface Media {
   id: string;
   memorialId: string;
@@ -104,6 +93,9 @@ export interface Media {
   createdAt: string;
 }
 
+/**
+ * 留言类型
+ */
 export interface Message {
   id: string;
   memorialId: string;
@@ -112,10 +104,13 @@ export interface Message {
   isEdited: boolean;
   createdAt: string;
   updatedAt: string;
-  authorNickName: string;
-  authorAvatar: string | null;
+  authorNickName?: string;
+  authorAvatar?: string | null;
 }
 
+/**
+ * 通知类型
+ */
 export interface Notification {
   id: string;
   userId: string;

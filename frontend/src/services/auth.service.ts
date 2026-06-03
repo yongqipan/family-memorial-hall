@@ -1,5 +1,10 @@
 import api from './api';
-import { ApiResponse } from '../types';
+
+interface ApiResponse<T> {
+  code: string;
+  message: string;
+  data?: T;
+}
 
 export interface LoginRequest {
   email: string;
@@ -32,7 +37,7 @@ export interface LoginResponse {
  */
 export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await api.post<ApiResponse<LoginResponse>>('/auth/login', data);
-  return response.data.data;
+  return response.data.data as LoginResponse;
 }
 
 /**
@@ -49,7 +54,7 @@ export async function refreshToken(refreshToken: string): Promise<LoginResponse>
   const response = await api.post<ApiResponse<LoginResponse>>('/auth/refresh', {
     refreshToken,
   });
-  return response.data.data;
+  return response.data.data as LoginResponse;
 }
 
 /**

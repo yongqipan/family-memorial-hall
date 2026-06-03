@@ -2,7 +2,6 @@ import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/auth.service';
 import { useAuthStore } from '../store/auth.store';
-import { LogIn } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ export default function Login() {
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       setUser(response.user);
-      navigate('/');
+      navigate('/memorials/mem-001');
     } catch (err: any) {
       setError(err.response?.data?.message || '登录失败，请检查邮箱和密码');
     } finally {
@@ -31,29 +30,44 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ceremonial-gold/20 to-purple-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <LogIn className="w-16 h-16 text-ceremonial-gold" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #fef3c7 0%, #f3e8ff 100%)',
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        padding: '32px',
+        borderRadius: '16px',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+        width: '100%',
+        maxWidth: '400px',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ fontSize: '64px', marginBottom: '16px' }}>🏛️</div>
+          <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937', marginBottom: '8px' }}>
             亲人纪念堂
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            登录以访问家族纪念空间
-          </p>
+          <p style={{ color: '#6b7280' }}>登录以访问家族纪念空间</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg mb-4">
+          <div style={{
+            backgroundColor: '#fee2e2',
+            color: '#dc2626',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '16px',
+          }}>
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="email" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' }}>
               邮箱
             </label>
             <input
@@ -62,13 +76,19 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-ceremonial-gold focus:border-transparent dark:bg-gray-700 dark:text-white"
+              style={{
+                width: '100%',
+                padding: '8px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                fontSize: '16px',
+              }}
               placeholder="your@email.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="password" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' }}>
               密码
             </label>
             <input
@@ -77,7 +97,13 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-ceremonial-gold focus:border-transparent dark:bg-gray-700 dark:text-white"
+              style={{
+                width: '100%',
+                padding: '8px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                fontSize: '16px',
+              }}
               placeholder="••••••••"
             />
           </div>
@@ -85,17 +111,35 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-ceremonial-gold text-white py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: loading ? '#9ca3af' : '#D4AF37',
+              color: 'white',
+              padding: '12px',
+              borderRadius: '8px',
+              fontWeight: '500',
+              fontSize: '16px',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#B8860B')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = '#D4AF37')}
           >
             {loading ? '登录中...' : '登录'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
+        <p style={{ textAlign: 'center', color: '#6b7280', marginTop: '24px' }}>
           还没有账号？{' '}
           <button
             onClick={() => navigate('/register')}
-            className="text-ceremonial-gold hover:text-yellow-600 font-medium"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#D4AF37',
+              fontWeight: '500',
+              cursor: 'pointer',
+            }}
           >
             注册
           </button>

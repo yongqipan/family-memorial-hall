@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* 全局样式 - 暂时不使用 TailwindCSS */
 
 :root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -39,38 +37,6 @@ body {
   box-sizing: border-box;
 }
 
-/* 3D 场景容器 */
 canvas {
   touch-action: none;
-}
-
-/* 祭拜动作按钮 */
-.ritual-button {
-  @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95;
-}
-
-.ritual-button-primary {
-  @apply bg-ceremonial-gold text-white hover:bg-yellow-600;
-}
-
-.ritual-button-secondary {
-  @apply bg-ceremonial-silver text-gray-800 hover:bg-gray-400;
-}
-
-/* 纪念卡片 */
-.memorial-card {
-  @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl;
-}
-
-/* 家族树节点 */
-.family-tree-node {
-  @apply p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer;
-}
-
-.family-tree-node-alive {
-  @apply border-green-500 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40;
-}
-
-.family-tree-node-deceased {
-  @apply border-ceremonial-gold bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/40;
 }

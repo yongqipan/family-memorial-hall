@@ -1,144 +1,188 @@
-import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import RitualScene from '../components/RitualScene';
-import { performRitual } from '../services/memorial.service';
-import { Flower, Candlestick, Flame, User, Gift, MessageSquare, Image, Home, User as UserIcon } from 'lucide-react';
 
 export default function MemorialHall() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [showRitualMenu, setShowRitualMenu] = useState(false);
-  const [selectedRitual, setSelectedRitual] = useState<'FLOWER' | 'CANDLE' | 'INCENSE' | 'BOW' | 'OFFERING' | null>(null);
+  const [selectedRitual, setSelectedRitual] = useState<string | null>(null);
 
   const ritualActions = [
-    { type: 'FLOWER' as const, icon: Flower, label: '献花', color: 'bg-pink-500' },
-    { type: 'CANDLE' as const, icon: Candlestick, label: '点烛', color: 'bg-yellow-500' },
-    { type: 'INCENSE' as const, icon: Flame, label: '上香', color: 'bg-amber-700' },
-    { type: 'BOW' as const, icon: User, label: '鞠躬', color: 'bg-blue-500' },
-    { type: 'OFFERING' as const, icon: Gift, label: '供奉', color: 'bg-purple-500' },
+    { type: 'FLOWER', icon: '💐', label: '献花', color: '#FFB6C1' },
+    { type: 'CANDLE', icon: '🕯️', label: '点烛', color: '#FFD700' },
+    { type: 'INCENSE', icon: '🌿', label: '上香', color: '#8B4513' },
+    { type: 'BOW', icon: '🙏', label: '鞠躬', color: '#4169E1' },
+    { type: 'OFFERING', icon: '🍎', label: '供奉', color: '#9370DB' },
   ];
 
-  async function handlePerformRitual(ritualType: typeof selectedRitual) {
-    if (!id || !ritualType) return;
-    
-    try {
-      await performRitual(id, {
-        ritualType,
-        ritualData: {
-          flowerType: 'chrysanthemum',
-          color: 'white',
-        },
-      });
-      alert('祭拜成功');
-      setShowRitualMenu(false);
-      setSelectedRitual(null);
-    } catch (error) {
-      console.error('祭拜失败:', error);
-      alert('祭拜失败，请稍后重试');
-    }
+  async function handlePerformRitual(ritualType: string) {
+    alert(`祭拜成功：${ritualType}`);
+    setSelectedRitual(null);
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* 顶部导航栏 */}
-      <header className="bg-white dark:bg-gray-800 shadow-md z-10">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button onClick={() => navigate('/family')} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-              <Home className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+      <header style={{
+        backgroundColor: 'white',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        padding: '12px 20px',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button
+              onClick={() => navigate('/family')}
+              style={{
+                padding: '8px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '24px',
+              }}
+            >
+              🏠
             </button>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">纪念堂</h1>
+            <h1 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>纪念堂</h1>
           </div>
-          
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => navigate(`/memorials/${id}/biography`)}
-              className="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-            >
-              生平故事
-            </button>
-            <button
-              onClick={() => navigate(`/memorials/${id}/media`)}
-              className="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-            >
-              照片墙
-            </button>
-            <button
-              onClick={() => navigate(`/memorials/${id}/messages`)}
-              className="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-            >
-              留言
-            </button>
-            <button
-              onClick={() => navigate('/profile')}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-            >
-              <UserIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-            </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={() => navigate(`/memorials/${id}/biography`)} style={navButtonStyle}>生平故事</button>
+            <button onClick={() => navigate(`/memorials/${id}/media`)} style={navButtonStyle}>照片墙</button>
+            <button onClick={() => navigate(`/memorials/${id}/messages`)} style={navButtonStyle}>留言</button>
           </div>
         </div>
       </header>
 
       {/* 3D 场景 */}
-      <div className="flex-1 relative bg-gradient-to-b from-gray-900 to-gray-800">
-        <Canvas shadows className="w-full h-full">
+      <div style={{ flex: 1, position: 'relative', background: 'linear-gradient(to bottom, #1a1a2e, #16213e)' }}>
+        <Canvas shadows camera={{ position: [0, 2, 5], fov: 50 }}>
           <OrbitControls
             enableZoom={true}
-            enablePan={true}
+            enablePan={false}
             minDistance={2}
-            maxDistance={15}
-            minPolarAngle={Math.PI / 6}
-            maxPolarAngle={Math.PI / 2.2}
+            maxDistance={10}
+            minPolarAngle={Math.PI / 4}
+            maxPolarAngle={Math.PI / 2}
           />
-          <ambientLight intensity={0.4} />
+          <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={1} castShadow />
           <pointLight position={[-2, 2, -2]} intensity={0.5} color="#FFD700" />
           <pointLight position={[2, 2, -2]} intensity={0.5} color="#FFD700" />
-          <RitualScene sceneType="HALL" sceneConfig={{}} />
+          
+          {/* 地面 */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
+            <planeGeometry args={[20, 20]} />
+            <meshStandardMaterial color="#2F4F4F" />
+          </mesh>
+          
+          {/* 祭台 */}
+          <mesh position={[0, 0, -2]} castShadow>
+            <boxGeometry args={[4, 1, 2]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          {/* 牌位 */}
+          <mesh position={[0, 1, -2]} castShadow>
+            <boxGeometry args={[1.5, 2, 0.2]} />
+            <meshStandardMaterial color="#D4AF37" />
+          </mesh>
+          
+          {/* 烛台 - 左 */}
+          <mesh position={[-1.5, 0.5, -1.5]} castShadow>
+            <cylinderGeometry args={[0.1, 0.15, 0.5, 8]} />
+            <meshStandardMaterial color="#C0C0C0" />
+          </mesh>
+          
+          {/* 烛台 - 右 */}
+          <mesh position={[1.5, 0.5, -1.5]} castShadow>
+            <cylinderGeometry args={[0.1, 0.15, 0.5, 8]} />
+            <meshStandardMaterial color="#C0C0C0" />
+          </mesh>
         </Canvas>
 
         {/* 祭拜按钮 */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-4">
+        <div style={{
+          position: 'absolute',
+          bottom: '24px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '16px',
+        }}>
           {ritualActions.map((action) => (
             <button
               key={action.type}
-              onClick={() => {
-                setSelectedRitual(action.type);
-                setShowRitualMenu(true);
+              onClick={() => setSelectedRitual(action.type)}
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                backgroundColor: action.color,
+                border: 'none',
+                fontSize: '32px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                transition: 'transform 0.2s',
               }}
-              className={`${action.color} text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform`}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
               title={action.label}
-            >
-              <action.icon className="w-6 h-6" />
-            </button>
+            />
           ))}
         </div>
 
         {/* 祭拜确认对话框 */}
-        {showRitualMenu && selectedRitual && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl max-w-md mx-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                确认{ritualActions.find(a => a.type === selectedRitual)?.label}
+        {selectedRitual && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 20,
+          }}>
+            <div style={{
+              backgroundColor: 'white',
+              padding: '24px',
+              borderRadius: '16px',
+              maxWidth: '400px',
+              margin: '0 20px',
+            }}>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', color: '#1f2937' }}>
+                确认祭拜
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p style={{ color: '#6b7280', marginBottom: '24px' }}>
                 您确定要执行这个祭拜仪式吗？
               </p>
-              <div className="flex space-x-4">
+              <div style={{ display: 'flex', gap: '12px' }}>
                 <button
-                  onClick={() => {
-                    setShowRitualMenu(false);
-                    setSelectedRitual(null);
+                  onClick={() => setSelectedRitual(null)}
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    backgroundColor: '#f3f4f6',
+                    color: '#374151',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   取消
                 </button>
                 <button
                   onClick={() => handlePerformRitual(selectedRitual)}
-                  className="flex-1 px-4 py-2 bg-ceremonial-gold text-white rounded-lg hover:bg-yellow-600"
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    backgroundColor: '#D4AF37',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                  }}
                 >
                   确认
                 </button>
@@ -148,19 +192,36 @@ export default function MemorialHall() {
         )}
 
         {/* 统计信息 */}
-        <div className="absolute top-4 left-4 bg-white/90 dark:bg-gray-800/90 p-4 rounded-lg shadow-lg">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            <div className="mb-2">
-              <span className="font-medium">今日祭拜:</span>{' '}
-              <span className="text-lg font-bold text-ceremonial-gold">0</span>
-            </div>
-            <div>
-              <span className="font-medium">累计祭拜:</span>{' '}
-              <span className="text-lg font-bold text-ceremonial-gold">0</span>
-            </div>
+        <div style={{
+          position: 'absolute',
+          top: '16px',
+          left: '16px',
+          backgroundColor: 'rgba(255,255,255,0.9)',
+          padding: '16px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+        }}>
+          <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>
+            <span style={{ fontWeight: '500' }}>今日祭拜:</span>{' '}
+            <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#D4AF37' }}>0</span>
+          </div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>
+            <span style={{ fontWeight: '500' }}>累计祭拜:</span>{' '}
+            <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#D4AF37' }}>0</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+const navButtonStyle = {
+  padding: '8px 12px',
+  fontSize: '14px',
+  color: '#4b5563',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  borderRadius: '6px',
+  transition: 'background-color 0.2s',
+};

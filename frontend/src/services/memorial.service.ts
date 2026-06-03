@@ -1,5 +1,5 @@
 import api from './api';
-import { ApiResponse } from '../types';
+import type { Memorial, RitualAction } from '../types';
 
 export interface Memorial {
   id: string;
@@ -26,12 +26,18 @@ export interface RitualType {
   message?: string;
 }
 
+interface ApiResponse<T> {
+  code: string;
+  message: string;
+  data?: T;
+}
+
 /**
  * 获取纪念堂详情
  */
 export async function getMemorial(id: string): Promise<Memorial> {
   const response = await api.get<ApiResponse<Memorial>>(`/memorials/${id}`);
-  return response.data.data;
+  return response.data.data as Memorial;
 }
 
 /**
@@ -44,7 +50,7 @@ export async function createMemorial(data: {
   sceneConfig?: any;
 }): Promise<Memorial> {
   const response = await api.post<ApiResponse<Memorial>>('/memorials', data);
-  return response.data.data;
+  return response.data.data as Memorial;
 }
 
 /**
