@@ -7,6 +7,7 @@ import { testConnection as testDatabaseConnection } from './config/database';
 import { testConnection as testRedisConnection } from './config/redis';
 import { ensureBucketExists } from './config/minio';
 import winston from 'winston';
+import authRouter from './routes/auth.routes';
 
 const logger = winston.createLogger({
   level: 'info',
@@ -38,6 +39,9 @@ async function bootstrap() {
   app.get(`${config.app.apiPrefix}/health`, (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
+  
+  // 认证路由
+  app.use(`${config.app.apiPrefix}/auth`, authRouter());
   
   // 错误处理中间件
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

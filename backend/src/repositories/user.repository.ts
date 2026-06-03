@@ -2,6 +2,7 @@ import pg from 'pg';
 import { BaseRepository } from './base.repository';
 import { User, UserInfo, UserStatus, UserRole } from '../models/user.model';
 import { UserStatus as UserStatusEnum, UserRole as UserRoleEnum } from '../models/enums';
+import { query as dbQuery } from '../config/database';
 
 /**
  * 用户仓储库
@@ -15,7 +16,7 @@ export class UserRepository extends BaseRepository<User> {
    * 根据邮箱查找用户
    */
   async findByEmail(email: string): Promise<User | null> {
-    const result = await import('../config/database').then(m => m.query)(
+    const result = await dbQuery(
       'SELECT * FROM users WHERE email = $1',
       [email]
     );
@@ -31,7 +32,7 @@ export class UserRepository extends BaseRepository<User> {
    * 根据家族 ID 查找所有用户
    */
   async findByFamilyId(familyId: string): Promise<User[]> {
-    const result = await import('../config/database').then(m => m.query)(
+    const result = await dbQuery(
       'SELECT * FROM users WHERE family_id = $1 ORDER BY created_at DESC',
       [familyId]
     );
@@ -48,7 +49,7 @@ export class UserRepository extends BaseRepository<User> {
   ): Promise<User> {
     if (success) {
       // 登录成功，重置失败计数
-      const result = await import('../config/database').then(m => m.query)(
+      const result = await dbQuery(
         `UPDATE users 
          SET failed_login_attempts = 0, 
              lock_until = NULL, 
@@ -62,7 +63,7 @@ export class UserRepository extends BaseRepository<User> {
       return this.mapRowToEntity(result.rows[0]);
     } else {
       // 登录失败，增加失败计数
-      const result = await import('../config/database').then(m => m.query)(
+      const result = await dbQuery(
         `UPDATE users 
          SET failed_login_attempts = failed_login_attempts + 1,
              updated_at = CURRENT_TIMESTAMP 
@@ -79,7 +80,7 @@ export class UserRepository extends BaseRepository<User> {
    * 锁定账号
    */
   async lockAccount(userId: string, lockUntil: Date): Promise<User> {
-    const result = await import('../config/database').then(m => m.query)(
+    const result = await dbQuery(
       `UPDATE users 
        SET status = 'LOCKED'::user_status,
            lock_until = $2,
@@ -96,7 +97,7 @@ export class UserRepository extends BaseRepository<User> {
    * 解锁账号
    */
   async unlockAccount(userId: string): Promise<User> {
-    const result = await import('../config/database').then(m => m.query)(
+    const result = await dbQuery(
       `UPDATE users 
        SET status = 'ACTIVE'::user_status,
            lock_until = NULL,
@@ -114,7 +115,7 @@ export class UserRepository extends BaseRepository<User> {
    * 更新用户家族
    */
   async updateFamily(userId: string, familyId: string | null): Promise<User> {
-    const result = await import('../config/database').then(m => m.query)(
+    const result = await dbQuery(
       `UPDATE users 
        SET family_id = $2,
            updated_at = CURRENT_TIMESTAMP 

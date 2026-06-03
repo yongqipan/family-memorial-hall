@@ -30,7 +30,8 @@ export const config = {
 
   /** JWT 配置 */
   jwt: {
-    secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+    accessTokenSecret: process.env.JWT_SECRET || 'your-super-secret-jwt-access-token-key',
+    refreshTokenSecret: process.env.JWT_REFRESH_SECRET || 'your-super-secret-jwt-refresh-token-key',
     accessTokenExpiresIn: parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRES_IN || '3600', 10), // 1 小时
     refreshTokenExpiresIn: parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRES_IN || '604800', 10), // 7 天
   },
