@@ -30,88 +30,154 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ceremonial-gold/20 to-purple-100">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <UserPlus className="w-16 h-16 text-ceremonial-gold" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">注册账号</h1>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #fef3c7 0%, #f3e8ff 100%)',
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        padding: '32px',
+        borderRadius: '16px',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+        width: '100%',
+        maxWidth: '400px',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ fontSize: '64px', marginBottom: '16px' }}>👤</div>
+          <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937', marginBottom: '8px' }}>
+            注册账号
+          </h1>
+          <p style={{ color: '#6b7280' }}>创建您的家族纪念空间</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4">
+          <div style={{
+            backgroundColor: '#fee2e2',
+            color: '#dc2626',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '16px',
+          }}>
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="nickName" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' }}>
               昵称
             </label>
             <input
+              id="nickName"
               type="text"
               value={formData.nickName}
               onChange={(e) => setFormData({ ...formData, nickName: e.target.value })}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ceremonial-gold"
+              style={{
+                width: '100%',
+                padding: '8px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                fontSize: '16px',
+              }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' }}>
               邮箱
             </label>
             <input
+              id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ceremonial-gold"
+              style={{
+                width: '100%',
+                padding: '8px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                fontSize: '16px',
+              }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="password" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' }}>
               密码
             </label>
             <input
+              id="password"
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
               minLength={8}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ceremonial-gold"
+              style={{
+                width: '100%',
+                padding: '8px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                fontSize: '16px',
+              }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="inviteCode" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '8px' }}>
               邀请码 (可选)
             </label>
             <input
+              id="inviteCode"
               type="text"
               value={formData.inviteCode}
               onChange={(e) => setFormData({ ...formData, inviteCode: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ceremonial-gold"
+              style={{
+                width: '100%',
+                padding: '8px 16px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                fontSize: '16px',
+              }}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-ceremonial-gold text-white py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors"
+            style={{
+              backgroundColor: loading ? '#9ca3af' : '#D4AF37',
+              color: 'white',
+              padding: '12px',
+              borderRadius: '8px',
+              fontWeight: '500',
+              fontSize: '16px',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#B8860B')}
+            onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = '#D4AF37')}
           >
             {loading ? '注册中...' : '注册'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-6">
+        <p style={{ textAlign: 'center', color: '#6b7280', marginTop: '24px' }}>
           已有账号？{' '}
           <button
             onClick={() => navigate('/login')}
-            className="text-ceremonial-gold hover:text-yellow-600 font-medium"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#D4AF37',
+              fontWeight: '500',
+              cursor: 'pointer',
+            }}
           >
             登录
           </button>
