@@ -1,4 +1,4 @@
-import Minio from 'minio';
+import * as Minio from 'minio';
 import config from '../config';
 import winston from 'winston';
 
