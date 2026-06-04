@@ -32,7 +32,7 @@ export default function App() {
           }
         />
         <Route
-          path="/biography/:id"
+          path="/memorials/:id/biography"
           element={
             <PrivateRoute>
               <Biography />
@@ -40,7 +40,7 @@ export default function App() {
           }
         />
         <Route
-          path="/media"
+          path="/memorials/:id/media"
           element={
             <PrivateRoute>
               <MediaGallery />
@@ -48,7 +48,7 @@ export default function App() {
           }
         />
         <Route
-          path="/messages"
+          path="/memorials/:id/messages"
           element={
             <PrivateRoute>
               <Messages />

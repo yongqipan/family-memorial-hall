@@ -87,7 +87,7 @@ export default function MemorialHall() {
           position: [
             positions[itemCount][0],
             1.25,  // 祭台表面高度
-            -1.6,  // 放在祭台前方
+            -1.6, // 向前移一点，离牌位远一些
           ],
           id: Date.now(),
         },
@@ -98,6 +98,12 @@ export default function MemorialHall() {
     setTimeout(() => {
       setAnimationMessage(null);
     }, 2000);
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    navigate('/login');
   }
 
   return (
@@ -124,10 +130,27 @@ export default function MemorialHall() {
             </button>
             <h1 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>纪念堂</h1>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => navigate(`/memorials/${id}/biography`)} style={navButtonStyle}>生平故事</button>
-            <button onClick={() => navigate(`/memorials/${id}/media`)} style={navButtonStyle}>照片墙</button>
-            <button onClick={() => navigate(`/memorials/${id}/messages`)} style={navButtonStyle}>留言</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={() => navigate(`/memorials/${id}/biography`)} style={navButtonStyle}>生平故事</button>
+              <button onClick={() => navigate(`/memorials/${id}/media`)} style={navButtonStyle}>照片墙</button>
+              <button onClick={() => navigate(`/memorials/${id}/messages`)} style={navButtonStyle}>留言</button>
+            </div>
+            <button
+              onClick={handleLogout}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#dc2626',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: '500',
+                fontSize: '14px',
+              }}
+            >
+              退出
+            </button>
           </div>
         </div>
       </header>
