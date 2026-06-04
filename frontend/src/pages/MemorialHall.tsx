@@ -68,31 +68,35 @@ export default function MemorialHall() {
     setAnimationMessage(`${action.emoji} ${action.label}成功！`);
     
     // 添加祭品到场景 - 摆放在祭台桌面上，牌位前方
-    const itemCount = offeringItems.filter(item => item.type !== 'BOW').length;
-    // 祭台表面 y=1.2, 物品底部放在 y=1.25（略高于表面）
-    // z 轴：牌位在 z=-2.8（牌位底部），祭品放在 z=-1.6 左右（祭台前方区域）
-    const positions = [
-      [-0.8, 1.25, -1.6],  // 左
-      [-0.4, 1.25, -1.6],  // 左中
-      [0, 1.25, -1.6],     // 中
-      [0.4, 1.25, -1.6],   // 右中
-      [0.8, 1.25, -1.6],   // 右
+    const newItem = {
+      type: ritualType,
+      id: Date.now(),
+    };
+    
+    // 根据物品总数重新计算所有位置，确保始终居中对称排列
+    const newTotalCount = offeringItems.filter(item => item.type !== 'BOW').length + 1;
+    
+    // 一字排列的间距配置
+    const spacingConfig = [
+      [],  // 0 个物品
+      [0],  // 1 个物品：中间
+      [-0.4, 0.4],  // 2 个物品：左右对称
+      [-0.5, 0, 0.5],  // 3 个物品：左中右
+      [-0.6, -0.2, 0.2, 0.6],  // 4 个物品：对称分布
+      [-0.8, -0.4, 0, 0.4, 0.8],  // 5 个物品：均匀分布
     ];
     
-    if (ritualType !== 'BOW' && itemCount < 5) {
-      setOfferingItems(prev => [
-        ...prev,
-        {
-          type: ritualType,
-          position: [
-            positions[itemCount][0],
-            1.25,  // 祭台表面高度
-            -1.6, // 向前移一点，离牌位远一些
-          ],
-          id: Date.now(),
-        },
-      ]);
-    }
+    const xPositions = spacingConfig[Math.min(newTotalCount, 5)];
+    
+    // 重新计算所有物品位置
+    const updatedItems = [...offeringItems, newItem]
+      .filter(item => item.type !== 'BOW')
+      .map((item, index) => ({
+        ...item,
+        position: [xPositions[index], 1.25, -1.6] as [number, number, number],
+      }));
+    
+    setOfferingItems(updatedItems);
     
     // 显示动画消息 2 秒后消失
     setTimeout(() => {
@@ -161,6 +165,7 @@ export default function MemorialHall() {
           <OrbitControls
             enableZoom={true}
             enablePan={false}
+            enableRotate={false}
             minDistance={2}
             maxDistance={10}
             minPolarAngle={Math.PI / 4}
