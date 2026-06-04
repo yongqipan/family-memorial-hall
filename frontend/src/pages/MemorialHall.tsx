@@ -555,19 +555,6 @@ export default function MemorialHall() {
         )}
 
         {/* 操作提示 */}
-        <div style={{
-          position: 'absolute',
-          top: '16px',
-          left: '16px',
-          backgroundColor: 'rgba(255,255,255,0.8)',
-          padding: '12px',
-          borderRadius: '8px',
-          color: '#6b7280',
-          fontSize: '13px',
-          zIndex: 10,
-        }}>
-          🖱️ 拖拽旋转视角 | 滚轮缩放
-        </div>
       </div>
     </div>
   );
